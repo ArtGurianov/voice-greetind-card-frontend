@@ -1,15 +1,18 @@
+import { Router } from "@reach/router";
 import React from "react";
 import "./App.css";
-import Audio2 from "./Audio2";
 import { StopwatchProvider } from "./context/StopwatchContext";
-import Sketch from "./Sketch";
+import AudioPage from "./pages/AudioPage";
+import SketchPage from "./pages/SketchPage";
 
 function App() {
   return (
     <div className="App">
-      <Sketch />
       <StopwatchProvider>
-        <Audio2 />
+        <Router>
+          <AudioPage path="/" />
+          <SketchPage path="/sketch" />
+        </Router>
       </StopwatchProvider>
     </div>
   );
