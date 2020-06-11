@@ -12,16 +12,14 @@ const Uploader = () => {
   }, [setRefs]);
 
   return (
-    <div>
-      <div style={blobUrl ? { display: "none" } : { display: "inline-table" }}>
-        <input
-          onClick={() => uploadAudio(refs)}
-          type="file"
-          accept="audio/*"
-          capture
-          ref={uploaderRef}
-        />
-      </div>
+    <div style={blobUrl ? { display: "none" } : { display: "block" }}>
+      <input
+        onClick={() => uploadAudio(refs)}
+        type="file"
+        accept="audio/*"
+        capture
+        ref={uploaderRef}
+      />
     </div>
   );
 };

@@ -16,8 +16,8 @@ const Recorder = () => {
   }, [setRefs]);
 
   return (
-    <div>
-      <div style={blobUrl ? { display: "none" } : { display: "inline-table" }}>
+    <div style={blobUrl ? { display: "none" } : { display: "block" }}>
+      <div>
         <button
           onClick={() => recordAudio(refs)}
           style={
@@ -26,6 +26,8 @@ const Recorder = () => {
         >
           Rec.
         </button>
+      </div>
+      <div>
         <button
           ref={stopButtonRef}
           style={

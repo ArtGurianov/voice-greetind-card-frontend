@@ -12,7 +12,7 @@ const Player = () => {
   }, [setRefs]);
 
   return (
-    <div style={!blobUrl ? { display: "none" } : { display: "inline-table" }}>
+    <div style={!blobUrl ? { display: "none" } : { display: "block" }}>
       <audio controls ref={audioPlayerRef} src={blobUrl}></audio>
     </div>
   );

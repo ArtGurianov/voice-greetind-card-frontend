@@ -9,7 +9,6 @@ const AudioPage = () => {
   return (
     <AudioProvider>
       <Uploader />
-      OR
       <Recorder />
       <Player />
       <Actions />

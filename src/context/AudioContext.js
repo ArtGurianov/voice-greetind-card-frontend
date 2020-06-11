@@ -33,7 +33,7 @@ export const AudioProvider = ({ children }) => {
         ? localStorage.setItem("blobUrl", blobUrl)
         : localStorage.removeItem("blobUrl");
     }
-  }, [blobUrl]);
+  }, [blobUrl, setBlobUrl, setIsRecording, refs]);
 
   const recordAudio = (refs) => {
     if (!navigator.mediaDevices) {

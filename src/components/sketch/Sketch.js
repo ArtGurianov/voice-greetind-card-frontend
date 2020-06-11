@@ -1,7 +1,7 @@
 import p5 from "p5";
 import "p5/lib/addons/p5.dom";
 import "p5/lib/addons/p5.sound";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 //import "./scripts/p5.sound";
 
 const createSketch = (p) => {
@@ -21,10 +21,12 @@ const createSketch = (p) => {
 };
 
 const Sketch = () => {
-  const myRef = React.createRef();
-  new p5(createSketch, myRef.current);
+  const sketchRef = useRef();
+  useEffect(() => {
+    new p5(createSketch, sketchRef.current);
+  }, []);
 
-  return <div ref={myRef}></div>;
+  return <div ref={sketchRef}></div>;
 };
 
 export default Sketch;
