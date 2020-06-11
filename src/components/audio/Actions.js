@@ -1,4 +1,3 @@
-import { navigate } from "@reach/router";
 import React, { useEffect, useRef } from "react";
 import { useAudio } from "../../context/AudioContext";
 
@@ -7,8 +6,29 @@ const Actions = () => {
   const downloadLinkRef = useRef();
   const resetButtonRef = useRef();
 
-  const submitAudio = () => {
-    navigate("/sketch");
+  const submitAudio = async () => {
+    const blob = await fetch(blobUrl).then((r) => r.blob());
+    // const result = await fetch("https://api.wit.ai/speech", {
+    //   method: "post",
+    //   headers: {
+    //     accept: "application/json",
+    //     authorization: "Bearer " + process.env.WITAI_TOKEN,
+    //     "Content-Type": "audio/wav",
+    //   },
+    //   body: blob,
+    // });
+    let formData = new FormData();
+    formData.append("audiofile", blob);
+    const result = await fetch("http://localhost:8000/audio/uploadAudio", {
+      method: "post",
+      body: formData,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+    //const jsonResult = await result.json();
+    console.log(await result.json());
+    //navigate("/sketch");
   };
 
   useEffect(() => {
