@@ -5,16 +5,12 @@ import RecordingTimer from "../RecordingTimer";
 const Recorder = () => {
   const { blobUrl, recordAudio, isRecording, refs, setRefs } = useAudio();
   const stopButtonRef = useRef();
-  const downloadLinkRef = useRef();
-  const recorderResetButtonRef = useRef();
 
   useEffect(() => {
     setRefs((prevRefs) => {
       return {
         ...prevRefs,
         stopButtonRef,
-        downloadLinkRef,
-        recorderResetButtonRef,
       };
     });
   }, [setRefs]);
@@ -39,18 +35,6 @@ const Recorder = () => {
           stop
         </button>
         <RecordingTimer running={isRecording} />
-      </div>
-      <div style={!blobUrl ? { display: "none" } : { display: "inline-table" }}>
-        <button ref={recorderResetButtonRef}>X</button>
-      </div>
-      <div style={blobUrl ? { display: "inline-table" } : { display: "none" }}>
-        <a
-          href={blobUrl ? blobUrl : "/"}
-          ref={downloadLinkRef}
-          download="myrecord.wav"
-        >
-          download
-        </a>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import React from "react";
+import Actions from "../components/audio/Actions";
 import Player from "../components/audio/Player";
 import Recorder from "../components/audio/Recorder";
 import Uploader from "../components/audio/Uploader";
@@ -11,6 +12,7 @@ const AudioPage = () => {
       OR
       <Recorder />
       <Player />
+      <Actions />
     </AudioProvider>
   );
 };

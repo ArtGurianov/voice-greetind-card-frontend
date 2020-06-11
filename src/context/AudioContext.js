@@ -64,7 +64,7 @@ export const AudioProvider = ({ children }) => {
             )
           );
           chunks.length = 0;
-          refs.recorderResetButtonRef.current.addEventListener("click", () => {
+          refs.resetButtonRef.current.addEventListener("click", () => {
             setBlobUrl(null);
             refs.audioPlayerRef.current.src = null;
             setIsRecording(false);
@@ -79,7 +79,7 @@ export const AudioProvider = ({ children }) => {
   const uploadAudio = (refs) => {
     refs.uploaderRef.current.addEventListener("change", (e) => {
       setBlobUrl(URL.createObjectURL(e.target.files[0]));
-      refs.uploaderResetButtonRef.current.addEventListener("click", () => {
+      refs.resetButtonRef.current.addEventListener("click", () => {
         setBlobUrl(null);
         refs.uploaderRef.current.value = null;
         refs.audioPlayerRef.current.src = null;

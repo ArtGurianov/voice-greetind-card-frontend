@@ -4,11 +4,10 @@ import { useAudio } from "../../context/AudioContext";
 const Uploader = () => {
   const { blobUrl, uploadAudio, refs, setRefs } = useAudio();
   const uploaderRef = useRef();
-  const uploaderResetButtonRef = useRef();
 
   useEffect(() => {
     setRefs((prevRefs) => {
-      return { ...prevRefs, uploaderRef, uploaderResetButtonRef };
+      return { ...prevRefs, uploaderRef };
     });
   }, [setRefs]);
 
@@ -22,9 +21,6 @@ const Uploader = () => {
           capture
           ref={uploaderRef}
         />
-      </div>
-      <div style={!blobUrl ? { display: "none" } : { display: "inline-table" }}>
-        <button ref={uploaderResetButtonRef}>X</button>
       </div>
     </div>
   );
