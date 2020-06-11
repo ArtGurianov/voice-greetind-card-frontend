@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 export const AudioContext = createContext({});
 
@@ -6,6 +12,28 @@ export const AudioProvider = ({ children }) => {
   const [refs, setRefs] = useState({});
   const [blobUrl, setBlobUrl] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
+
+  useEffect(() => {
+    const savedBlobUrl = localStorage.getItem("blobUrl");
+    savedBlobUrl && setBlobUrl(savedBlobUrl);
+  }, []);
+
+  const firstUpdate = useRef(true);
+  useEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+    } else {
+      refs.resetButtonRef.current.addEventListener("click", () => {
+        setBlobUrl(null);
+        refs.uploaderRef.current.value = null;
+        refs.audioPlayerRef.current.src = null;
+        setIsRecording(false);
+      });
+      blobUrl
+        ? localStorage.setItem("blobUrl", blobUrl)
+        : localStorage.removeItem("blobUrl");
+    }
+  }, [blobUrl]);
 
   const recordAudio = (refs) => {
     if (!navigator.mediaDevices) {
@@ -64,11 +92,6 @@ export const AudioProvider = ({ children }) => {
             )
           );
           chunks.length = 0;
-          refs.resetButtonRef.current.addEventListener("click", () => {
-            setBlobUrl(null);
-            refs.audioPlayerRef.current.src = null;
-            setIsRecording(false);
-          });
         };
       })
       .catch((err) => {
@@ -79,11 +102,6 @@ export const AudioProvider = ({ children }) => {
   const uploadAudio = (refs) => {
     refs.uploaderRef.current.addEventListener("change", (e) => {
       setBlobUrl(URL.createObjectURL(e.target.files[0]));
-      refs.resetButtonRef.current.addEventListener("click", () => {
-        setBlobUrl(null);
-        refs.uploaderRef.current.value = null;
-        refs.audioPlayerRef.current.src = null;
-      });
     });
   };
 
