@@ -28,7 +28,7 @@ const Actions = () => {
       },
     });
     const jsonResult = await result.json();
-    jsonResult.message === "ok" ? navigate("/sketch") : console.log("problema");
+    jsonResult.status === "ok" ? navigate("/sketch") : console.log("problema");
   };
 
   useEffect(() => {

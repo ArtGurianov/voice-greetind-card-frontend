@@ -69,10 +69,14 @@ export const AudioProvider = ({ children }) => {
       .getUserMedia({
         audio: true,
         video: false,
+        sampleRate: 44100,
+        sampleSize: 16,
+        channelCount: 1,
       })
       .then((mediaStream) => {
         const mediaRecorder = new MediaRecorder(mediaStream, {
-          mimeType: "audio/webm",
+          //mimeType: "audio/webm;codecs=pcm",
+          mimeType: "audio/webm;codecs=pcm",
         });
         const chunks = [];
         mediaRecorder.start();
@@ -101,7 +105,9 @@ export const AudioProvider = ({ children }) => {
           mediaStream.getTracks()[0].stop();
           setBlobUrl(
             window.URL.createObjectURL(
-              new Blob(chunks, { type: "audio/wave;" })
+              new Blob(chunks, {
+                type: "audio/wave;",
+              })
             )
           );
           chunks.length = 0;
