@@ -75,8 +75,8 @@ export const AudioProvider = ({ children }) => {
       })
       .then((mediaStream) => {
         const mediaRecorder = new MediaRecorder(mediaStream, {
-          //mimeType: "audio/webm;codecs=pcm",
           mimeType: "audio/webm;codecs=pcm",
+          bitsPerSecond: 128000,
         });
         const chunks = [];
         mediaRecorder.start();
