@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { blob2dataUrl, dataUrl2blob } from "../utils/blob2dataUrl";
 
 export const AudioContext = createContext({});
 
@@ -14,8 +15,11 @@ export const AudioProvider = ({ children }) => {
   const [isRecording, setIsRecording] = useState(false);
 
   useEffect(() => {
-    const savedBlobUrl = localStorage.getItem("blobUrl");
-    savedBlobUrl && setBlobUrl(savedBlobUrl);
+    const dataUrl = localStorage.getItem("dataUrl");
+    if (dataUrl) {
+      const objectUrl = window.URL.createObjectURL(dataUrl2blob(dataUrl));
+      objectUrl && setBlobUrl(objectUrl);
+    }
   }, []);
 
   const firstUpdate = useRef(true);
@@ -29,9 +33,18 @@ export const AudioProvider = ({ children }) => {
         refs.audioPlayerRef.current.src = null;
         setIsRecording(false);
       });
-      blobUrl
-        ? localStorage.setItem("blobUrl", blobUrl)
-        : localStorage.removeItem("blobUrl");
+
+      if (blobUrl) {
+        fetch(blobUrl)
+          .then((r) => r.blob())
+          .then((blob) => {
+            blob2dataUrl(blob).then((url) => {
+              localStorage.setItem("dataUrl", url);
+            });
+          });
+      } else {
+        localStorage.removeItem("dataUrl");
+      }
     }
   }, [blobUrl, setBlobUrl, setIsRecording, refs]);
 
@@ -83,7 +96,7 @@ export const AudioProvider = ({ children }) => {
           }
         };
 
-        mediaRecorder.onstop = () => {
+        mediaRecorder.onstop = async () => {
           setIsRecording(false);
           mediaStream.getTracks()[0].stop();
           setBlobUrl(
@@ -100,8 +113,8 @@ export const AudioProvider = ({ children }) => {
   };
 
   const uploadAudio = (refs) => {
-    refs.uploaderRef.current.addEventListener("change", (e) => {
-      setBlobUrl(URL.createObjectURL(e.target.files[0]));
+    refs.uploaderRef.current.addEventListener("change", async (e) => {
+      setBlobUrl(window.URL.createObjectURL(e.target.files[0]));
     });
   };
 

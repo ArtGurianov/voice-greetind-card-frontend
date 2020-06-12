@@ -26,7 +26,6 @@ const Actions = () => {
         "Access-Control-Allow-Origin": "*",
       },
     });
-    //const jsonResult = await result.json();
     console.log(await result.json());
     //navigate("/sketch");
   };
