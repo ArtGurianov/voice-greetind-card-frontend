@@ -1,3 +1,4 @@
+import { navigate } from "@reach/router";
 import React, { useEffect, useRef } from "react";
 import { useAudio } from "../../context/AudioContext";
 
@@ -26,8 +27,8 @@ const Actions = () => {
         "Access-Control-Allow-Origin": "*",
       },
     });
-    console.log(await result.json());
-    //navigate("/sketch");
+    const jsonResult = await result.json();
+    jsonResult.message === "ok" ? navigate("/sketch") : console.log("problema");
   };
 
   useEffect(() => {

@@ -3,13 +3,13 @@ import React from "react";
 import Sketch from "../components/sketch/Sketch";
 
 const SketchPage = () => {
-  const blobUrl = localStorage.getItem("blobUrl");
+  const dataUrl = localStorage.getItem("dataUrl");
 
-  !blobUrl && navigate("/");
+  !dataUrl && navigate("/");
 
   return (
     <div>
-      {blobUrl}
+      {dataUrl}
       <Sketch />
     </div>
   );
