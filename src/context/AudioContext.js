@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import RecordRTC, { StereoAudioRecorder } from "recordrtc";
 import { blob2dataUrl, dataUrl2blob } from "../utils/blob2dataUrl";
 
 export const AudioContext = createContext({});
@@ -44,6 +45,7 @@ export const AudioProvider = ({ children }) => {
           });
       } else {
         localStorage.removeItem("dataUrl");
+        localStorage.removeItem("message");
       }
     }
   }, [blobUrl, setBlobUrl, setIsRecording, refs]);
@@ -69,49 +71,53 @@ export const AudioProvider = ({ children }) => {
       .getUserMedia({
         audio: true,
         video: false,
-        sampleRate: 44100,
-        sampleSize: 16,
-        channelCount: 1,
+        // sampleRate: 44100,
+        // sampleSize: 16,
+        // channelCount: 1,
       })
       .then((mediaStream) => {
-        const mediaRecorder = new MediaRecorder(mediaStream, {
-          mimeType: "audio/webm;codecs=pcm",
+        const recorder = RecordRTC(mediaStream, {
+          type: "audio",
+          mimeType: "audio/wav",
+          recorderType: StereoAudioRecorder,
+          disableLogs: true,
+          desiredSampRate: 16000,
+          bufferSize: 16384,
+          numberOfAudioChannels: 1,
+
+          //timeSlice: 1000,
+          //ondataAvailable: (blob) => {}
           bitsPerSecond: 128000,
         });
-        const chunks = [];
-        mediaRecorder.start();
+        //const chunks = [];
+        recorder.startRecording();
         setIsRecording(true);
 
         setTimeout(() => {
-          if (mediaRecorder.state === "recording") {
-            mediaRecorder.stop();
+          if (recorder.state === "recording") {
+            recorder.stopRecording(() => {
+              setIsRecording(false);
+              mediaStream.getTracks()[0].stop();
+              setBlobUrl(window.URL.createObjectURL(recorder.getBlob()));
+            });
           }
         }, 10000);
 
         refs.stopButtonRef.current.addEventListener("click", () => {
-          if (mediaRecorder.state === "recording") {
-            mediaRecorder.stop();
+          if (recorder.state === "recording") {
+            recorder.stopRecording(async () => {
+              setIsRecording(false);
+              mediaStream.getTracks()[0].stop();
+              setBlobUrl(window.URL.createObjectURL(recorder.getBlob()));
+            });
           }
         });
 
-        mediaRecorder.ondataavailable = function (ev) {
-          if (ev.data.size > 0) {
-            chunks.push(ev.data);
-          }
-        };
-
-        mediaRecorder.onstop = async () => {
-          setIsRecording(false);
-          mediaStream.getTracks()[0].stop();
-          setBlobUrl(
-            window.URL.createObjectURL(
-              new Blob(chunks, {
-                type: "audio/wave;",
-              })
-            )
-          );
-          chunks.length = 0;
-        };
+        // mediaRecorder.ondataavailable = function (ev) {
+        //   if (ev.data.size > 0) {
+        //     chunks.push(ev.data);
+        //   }
+        // };
       })
       .catch((err) => {
         console.log(err.name, err.message);

@@ -9,15 +9,6 @@ const Actions = () => {
 
   const submitAudio = async () => {
     const blob = await fetch(blobUrl).then((r) => r.blob());
-    // const result = await fetch("https://api.wit.ai/speech", {
-    //   method: "post",
-    //   headers: {
-    //     accept: "application/json",
-    //     authorization: "Bearer " + process.env.WITAI_TOKEN,
-    //     "Content-Type": "audio/wav",
-    //   },
-    //   body: blob,
-    // });
     let formData = new FormData();
     formData.append("audiofile", blob);
     const result = await fetch("http://localhost:8000/audio/uploadAudio", {
@@ -28,7 +19,13 @@ const Actions = () => {
       },
     });
     const jsonResult = await result.json();
-    jsonResult.status === "ok" ? navigate("/sketch") : console.log("problema");
+    console.log(jsonResult);
+    if (jsonResult.status === "ok") {
+      localStorage.setItem("message", jsonResult.message);
+      navigate("/sketch");
+    } else {
+      console.log("problema");
+    }
   };
 
   useEffect(() => {

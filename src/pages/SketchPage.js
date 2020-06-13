@@ -4,12 +4,13 @@ import Sketch from "../components/sketch/Sketch";
 
 const SketchPage = () => {
   const dataUrl = localStorage.getItem("dataUrl");
+  const message = localStorage.getItem("message");
 
   !dataUrl && navigate("/");
 
   return (
     <div>
-      {dataUrl}
+      {message}
       <Sketch />
     </div>
   );
