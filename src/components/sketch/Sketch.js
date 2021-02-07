@@ -1,32 +1,55 @@
-import p5 from "p5";
-import "p5/lib/addons/p5.dom";
-import "p5/lib/addons/p5.sound";
 import React, { useEffect, useRef } from "react";
-//import "./scripts/p5.sound";
 
-const createSketch = (p) => {
-  // Native p5 functions work as they would normally but prefixed with
-  // a p5 object "p"
-  p.setup = () => {
-    //Everyhting that normally happens in setup works
-    p.createCanvas(800, 200);
-  };
+const Sketch = ({ audioFileBlob }) => {
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const audio = new Audio(audioFileBlob);
+  const source = audioCtx.createMediaElementSource(audio);
+  const analyser = audioCtx.createAnalyser();
+  source.connect(analyser);
+  analyser.connect(audioCtx.destination);
+  analyser.fftSize = 256;
+  const bufferLength = analyser.frequencyBinCount;
+  const frequencyData = new Uint8Array(bufferLength);
 
-  p.draw = () => {
-    // And everything that normally goes in draw in here
-    p.background(0);
-    p.circle(p.width / 3, p.height / 2, 50);
-    //p.triangle(30, 75, 58, 20, 86, 75);
-  };
-};
+  // setInterval(() => {
+  //   analyser.getByteFrequencyData(frequencyData);
+  //   console.log(frequencyData);
+  // }, 1000);
 
-const Sketch = () => {
+  //canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
+  // function draw() {
+  //   drawVisual = requestAnimationFrame(draw);
+
+  //   analyser.getByteFrequencyData(dataArray);
+
+  //   canvasCtx.fillStyle = "rgb(0, 0, 0)";
+  //   canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+  //   var barWidth = (WIDTH / bufferLength) * 2.5;
+  //   var barHeight;
+  //   var x = 0;
+
+  //   for (var i = 0; i < bufferLength; i++) {
+  //     barHeight = dataArray[i];
+
+  //     canvasCtx.fillStyle = "rgb(" + (barHeight + 100) + ",50,50)";
+  //     canvasCtx.fillRect(x, HEIGHT - barHeight / 2, barWidth, barHeight / 2);
+
+  //     x += barWidth + 1;
+  //   }
+  // }
+
   const sketchRef = useRef();
   useEffect(() => {
-    new p5(createSketch, sketchRef.current);
-  }, []);
+    console.log(frequencyData);
+  }, [frequencyData]);
 
-  return <div ref={sketchRef}></div>;
+  return (
+    <div>
+      <canvas ref={sketchRef} width="500" height="200"></canvas>
+    </div>
+  );
 };
 
 export default Sketch;

@@ -1,13 +1,16 @@
-import { navigate } from "@reach/router";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAudio } from "../../context/AudioContext";
 
 const Actions = () => {
   const { blobUrl, setRefs } = useAudio();
   const downloadLinkRef = useRef();
   const resetButtonRef = useRef();
+  const [isTextReady, setIsTextReady] = useState(false);
+  const [textValue, setTextValue] = useState("Загружаем текст...");
+  const inputRef = useRef();
 
   const submitAudio = async () => {
+    inputRef.current.style = { display: "table" };
     const blob = await fetch(blobUrl).then((r) => r.blob());
     let formData = new FormData();
     formData.append("audiofile", blob);
@@ -22,7 +25,8 @@ const Actions = () => {
     console.log(jsonResult);
     if (jsonResult.status === "ok") {
       localStorage.setItem("message", jsonResult.message);
-      navigate("/sketch");
+      setIsTextReady(true);
+      setTextValue(jsonResult.message);
     } else {
       console.log("problema");
     }
@@ -40,7 +44,16 @@ const Actions = () => {
   return (
     <div style={blobUrl ? { display: "block" } : { display: "none" }}>
       <div>
-        <button ref={resetButtonRef}>X</button>
+        <button
+          // onClick={() => {
+          //   inputRef.current.style = { display: "none" };
+          //   setTextValue("Загружаем текст...");
+          //   setIsTextReady(false);
+          // }}
+          ref={resetButtonRef}
+        >
+          X
+        </button>
       </div>
       <div>
         <a
@@ -52,8 +65,18 @@ const Actions = () => {
         </a>
       </div>
       <div>
-        <button onClick={submitAudio}>Next</button>
+        <button onClick={submitAudio}>SUBMIT</button>
       </div>
+      <br />
+      <span ref={inputRef} style={{ display: "none" }}>
+        <input
+          onChange={(e) => {
+            setTextValue(e.target.value);
+          }}
+          disabled={!isTextReady}
+          value={textValue}
+        ></input>
+      </span>
     </div>
   );
 };
